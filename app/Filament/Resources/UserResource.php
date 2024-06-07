@@ -42,7 +42,7 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('password')
                 ->password()
                 ->dehydrated(fn($state) => filled($state))
-                ->required(fn(Page $livewire):bool => $livewire instanceof CreateRecord)
+                ->required()
                 ->default(now())
             ]);
     }
