@@ -8,6 +8,7 @@ use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -18,14 +19,31 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-circle';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                ->required()
+                Forms\Components\TextInput::make('name')
+                ->required(),
+
+                Forms\Components\TextInput::make('email')
+                ->label('Email Address')
+                ->email()
+                ->maxLength(255)
+                ->unique(ignoreRecord: true)
+                ->required(),
+
+                Forms\Components\DateTimePicker::make('email_veridied_at')
+                ->label('Email Veridied At')
+                ->default(now()),
+
+                Forms\Components\TextInput::make('password')
+                ->password()
+                ->dehydrated(fn($state) => filled($state))
+                ->required(fn(Page $livewire):bool => $livewire instanceof CreateRecord)
+                ->default(now())
             ]);
     }
 
